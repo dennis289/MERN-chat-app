@@ -1,3 +1,4 @@
+import { getRecieverSocketId, io } from "../Socket/socket.js";
 import Conversation from "../models/conversation.models.js";
 import Message from "../models/message.model.js"
 
@@ -26,14 +27,20 @@ export const sendMessage= async(req,res) =>{
         if (newMessage){
             conversation.messages.push(newMessage._id)
         }
-// soket io will go here when the conversation will be real-time
-
         // await conversation.save();
         // await newMessage.save();
 
         // this will now run in parallel to increase optimization
 
         await Promise.all([conversation.save(),newMessage.save()])
+// soket io will go here when the conversation will be real-time
+        const recieverSocketId= getRecieverSocketId(recieverId) 
+        if (recieverSocketId){
+            //io.to (<socketId>).emit('event',data) will send the event to the specific user
+            io.to(recieverSocketId).emit('newMessage',newMessage)
+        }
+
+        
         ///send the message as a responce
         res.status(201).json(newMessage)
     } catch (error) {

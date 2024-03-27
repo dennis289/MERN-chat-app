@@ -60,7 +60,7 @@ export const login= async (req,res) =>{
         const isPasswordCorrect= await bcypt.compare(password, user?.password || "");//checks whether the password is correct or not
 // If there is anything that fails the error ids returned.
         if(!user || !isPasswordCorrect){
-            return res.status(400).json({error:"Invalidusername or password"})
+            return res.status(400).json({error:"Invalid username or password"})
         }
 
         generateTokenAndSetCookie(user._id,res);
