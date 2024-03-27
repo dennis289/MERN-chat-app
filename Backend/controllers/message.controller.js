@@ -27,22 +27,21 @@ export const sendMessage= async(req,res) =>{
         if (newMessage){
             conversation.messages.push(newMessage._id)
         }
-        // await conversation.save();
-        // await newMessage.save();
+        await conversation.save();
+        await newMessage.save();
 
         // this will now run in parallel to increase optimization
+        await Promise.all([conversation.save(), newMessage.save()]);
 
-        await Promise.all([conversation.save(),newMessage.save()])
-// soket io will go here when the conversation will be real-time
-        const recieverSocketId= getRecieverSocketId(recieverId) 
+        // soket io will go here when the conversation will be real-time
+        const recieverSocketId = getRecieverSocketId(recieverId);
         if (recieverSocketId){
             //io.to (<socketId>).emit('event',data) will send the event to the specific user
-            io.to(recieverSocketId).emit('newMessage',newMessage)
+            io.to(recieverSocketId).emit('newMessage', newMessage);
         }
 
-        
         ///send the message as a responce
-        res.status(201).json(newMessage)
+        res.status(201).json(newMessage);
     } catch (error) {
         console.log('Error in sendmessage controller:',error.message)
         res.status(400).json({error:"Internal server error"})

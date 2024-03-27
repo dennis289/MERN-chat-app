@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useState,useEffect } from 'react'
 import useConversation from '../zustand/useConversation';
 import toast from 'react-hot-toast';
 import { set } from 'mongoose';
 
 const useGetMessages = () => { 
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = useState(false);
     const {messages, setMessages, selectedConversation} = useConversation();
 
     useEffect(()=>{
